@@ -1,0 +1,35 @@
+void inorder(TreeNode<int>* root,vector<int> &ans)
+{
+    if(root==NULL)
+      return;
+    //inorder traversal of a BST is sorted so we will store it into vector
+    inorder(root->left,ans);
+    ans.push_back(root->data);
+    inorder(root->right,ans);
+}
+TreeNode<int>* flatten(TreeNode<int>* root)
+{
+    // Write your code here
+    vector<int> ans;
+    inorder(root,ans);
+    int n = ans.size();
+    //thn make the first vale of the vector as a new node
+    TreeNode<int>* newRoot = new TreeNode<int>(ans[0]);
+    TreeNode<int>* curr = newRoot;
+    for(int i=1;i<n;i++)
+    {
+        TreeNode<int>* temp = new TreeNode<int>(ans[i]);
+
+        //making the left of node as null then connecting the right node to the the next node
+        curr->left = NULL;
+        curr->right= temp;
+        curr = temp;
+    }
+    //making the left and right of the last node as null
+    curr->right=NULL;
+    curr->left = NULL;
+
+   //return the newRoot;
+   return newRoot; 
+
+}
