@@ -1,0 +1,67 @@
+#include <bits/stdc++.h> 
+class node
+{
+    public:
+    int data;
+    int i;
+    int j;
+
+    node(int data,int row,int column)
+    {
+        this->data=data;
+        i=row;
+        j=column;
+    }
+};
+class compare
+{
+    public:
+    bool operator()(node*a,node*b)
+    {
+        return a->data>b->data;
+    }
+};
+
+vector<int> mergeKSortedArrays(vector<vector<int>>&kArrays, int k)
+{
+    // Write your code here. 
+    //approach 
+    //we can merge ksorted arrays by pushing them into a vector and thn sort it
+    //but the time complexity will O(n*k*logn)
+    //we can achieve a better result by using min heap
+    //we insert the first element of the first k arrary
+    //thn insert it into a resultant array
+    //thn pop it and insert the next arry element into the heap
+    //************************
+
+    //step1 create a min heap of node* type and insert the first elements
+    priority_queue<node* ,vector<node*>,compare>minHeap;
+
+    for(int i=0;i<k;i++)
+    {
+        node* tmp = new node(kArrays[i][0],i,0);
+        minHeap.push(tmp);
+    }
+
+    vector<int> ans;
+    
+    //push the top element to the vector and pop thn add nxt element
+    while(minHeap.size()>0)
+    {
+        node* temp = minHeap.top();
+        ans.push_back(temp->data);
+        minHeap.pop();
+
+        int i = temp->i;
+        int j = temp->j;
+
+        if(j+1<kArrays[i].size())
+        {
+           node *next = new node(kArrays[i][j+1],i,j+1);
+           minHeap.push(next);
+        }
+    }
+    return ans;
+    
+
+}
