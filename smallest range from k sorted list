@@ -1,0 +1,75 @@
+smallest range from k sorted lists
+#include<bits/stdc++.h>
+class node
+{ 
+    public:
+    int data;
+    int i;
+    int j;
+    node(int data,int row,int col)
+    {
+        this->data = data;
+        i=row;
+        j=col;
+    }
+
+};
+class compare
+{
+    public:
+    bool operator()(node* a,node* b)
+    {
+       return a->data>b->data;
+    }
+};
+int kSorted(vector<vector<int>> &a, int k, int n) 
+{
+    // Write your code here.
+    int mini = INT_MAX;
+    int maxi = INT_MIN;
+    //to crete a priority queue of node type;
+    priority_queue<node*,vector<node*>,compare> minHeap;
+    //step1
+    //insert the first k starting elements of the list
+    for(int i=0;i<k;i++)
+    {
+        node* temp = new node(a[i][0],i,0);
+        maxi = max(maxi,a[i][0]);
+        mini = min(mini,a[i][0]);
+        minHeap.push(temp);
+    }
+
+    int start = mini;
+    int end = maxi;
+
+    //step2
+    //we will pop out the elements from the minHeap and compare with the range 
+    //the minimun element will be extracted from the heap 
+    //the maximum elment will wee found the maximum of the current ans the new maxi
+
+    while(minHeap.size()>0)
+    {
+        node* temp = minHeap.top();
+        minHeap.pop();
+        mini = temp->data;
+
+        //we have to compare the sum ranges
+        if(maxi-mini<end-start)
+        {
+            end=maxi;
+            start=mini;
+        }
+        //we have to insert the next element from next to the smallest element if it exists
+        if(temp->j+1<n)
+        {
+            maxi = max(maxi,a[temp->i][temp->j+1]);
+            minHeap.push(new node(a[temp->i][temp->j+1],temp->i,temp->j+1));
+        }
+        else//if no elements exits exit the looop
+        {
+            break;
+        }
+
+    }
+    return end -start+1;
+}
