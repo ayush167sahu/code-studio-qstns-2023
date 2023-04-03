@@ -1,0 +1,79 @@
+sudoku solver
+given a 9*9 matrix filled with empty boxes which are marked as 0 ,fill appropiate values to make the 9*9 matrix a valid sudoku
+a valid sudoku is a one which satisfies the following properties
+i->each 9 rows must have the 1-9 digits;
+ii->each 9 columns must have the 1-9 digits respectively;
+iii->as the matrix is a 9X9 matrix each 3x3 matrix must have 1-9 distinct elements;
+output;
+we have to print the output int the matrix form after solving the empty spaces
+#include <bits/stdc++.h> 
+bool isSafe(int row,int col ,vector<vector<int>>& board,int val)
+{
+    int n = board[0].size();
+    for (int i = 0; i < n; i++) 
+    {
+      //to check the row values;
+      if (board[row][i] == val)
+      {
+          return false;
+      }
+      //to check the column values
+      if(board[i][col]==val)
+      {
+          return false;
+
+      }
+      //to check the corresponding values in a 3X3 matrix 
+      if(board[3*(row/3) + (i/3) ][3*(col/3) + (i%3) ]==val)
+      {
+          return false;
+      }
+    
+    } 
+    return true;
+}
+bool solve(vector<vector<int>>& board)
+{
+    int n = board[0].size();
+
+    for(int i=0;i<n;i++)
+    {
+        for(int j=0;j<n;j++)
+        {
+            if(board[i][j]==0)
+            {
+              for(int val=1;val<=9;val++)
+              {
+                if (isSafe(i, j, board, val)) 
+                {
+                  board[i][j] = val;
+                  // recursion call
+                  bool nextEmptySpace = solve(board);
+                  // if the nextEmptySpace return true thn return true
+                  // else back track
+                  if (nextEmptySpace == true)
+                  {
+                      return true;
+                  }
+                  else
+                  {
+                    //we have to backtrack
+                    board[i][j] = 0;
+                  }
+                }
+              }
+              //if no ans comes even after trying all the values from 1-9 
+              //thn return false;
+              return false;
+            }
+        }
+    }
+    return true;
+}
+void solveSudoku(vector<vector<int>>& sudoku)
+{
+	// Write your code here
+    // No need to print the final sudoku
+    // Just fill the values in the given matrix
+    solve(sudoku);
+}
