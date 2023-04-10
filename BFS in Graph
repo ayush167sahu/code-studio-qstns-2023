@@ -1,0 +1,59 @@
+BFS in Graph
+***********************************************************************************************
+#include <bits/stdc++.h> 
+void prepareList(unordered_map<int,set<int>> &adj,vector<pair<int,int>> edges)
+{
+    for(int i=0;i<edges.size();i++)
+    {
+        int u = edges[i].first;
+        int v = edges[i].second;
+        
+        //as this is undirected graph we have to establish connection in both ways
+        adj[u].insert(v);
+        adj[v].insert(u);
+    }
+}
+void getBfs(unordered_map<int,set<int>> &adj,vector<int> &ans,unordered_map<int,bool> &visited,int node)
+{
+    queue<int> q;
+    q.push(node);
+    visited[node]=1;
+
+    while(q.size()>0)
+    {
+        int frontNode = q.front();
+        q.pop();
+
+        ans.push_back(frontNode);
+
+        for(auto i:adj[frontNode])
+        {
+             if(!visited[i])
+             {
+                 q.push(i);
+                 visited[i]=1;
+             }
+        }
+    }
+}
+vector<int> BFS(int vertex, vector<pair<int, int>> edges)
+{
+    // Write your code here
+    unordered_map<int ,set<int>> adj;
+    vector<int> ans;//we have to return the ans after pushing back the elments int the ans vector
+    //we have to make a visited data structure to keep the track if a data is visited or not
+    //so that we dont get into continous loops
+    unordered_map<int,bool> visited;
+
+    prepareList(adj,edges);
+    //as this is a disconnected graph we have to travel all the
+    //vectices from 0->vertex-1 for this we will use a for loop
+    for(int i=0;i<vertex;i++)
+    {
+      if (!visited[i]) 
+      {
+        getBfs(adj, ans, visited, i);
+      }
+    }
+    return ans;
+}
