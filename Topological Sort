@@ -1,0 +1,45 @@
+#include <bits/stdc++.h>
+void dfsTopo(int node,vector<bool>&visited,unordered_map<int,list<int>>&adj,stack<int> &st)
+{
+    visited[node] = true;
+
+    for(auto i:adj[node])
+    {
+        if(visited[i]==false)
+        {
+            dfsTopo(i,visited,adj,st);
+        }
+    }
+    st.push(node);
+}
+vector<int> topologicalSort(vector<vector<int>> &edges, int v, int e)  
+{
+    // Write your code here
+    vector<int> ans;
+    unordered_map<int,list<int>> adj;
+    for(int i=0;i<e;i++)
+    {
+        int u = edges[i][0];
+        int v = edges[i][1];
+
+        //as this is a directed graph
+        adj[u].push_back(v);
+    }
+
+    vector<bool> visited(v);
+    stack<int> st;
+    //stack is used because of the property LIFO
+    for(int i=0;i<v;i++)
+    {
+       if(!visited[i])
+       {
+           dfsTopo(i,visited,adj,st);
+       }
+    }
+    while(st.size()>0)
+    {
+        ans.push_back(st.top());
+        st.pop();
+    }
+    return ans;
+}
