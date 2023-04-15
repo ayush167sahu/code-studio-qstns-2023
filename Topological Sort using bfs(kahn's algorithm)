@@ -1,0 +1,54 @@
+#include <bits/stdc++.h> 
+vector<int> topologicalSort(vector<vector<int>> &edges, int v, int e)  
+{
+    // Write your code here
+    //first we have to create a adjascent list
+    unordered_map<int,list<int>> adj;
+    for(int i=0;i<e;i++)
+    {
+        int u = edges[i][0];
+        int v = edges[i][1];
+        
+        //as this is directed graph
+        adj[u].push_back(v);
+    }
+    //create indegree vector
+    vector<int> indegree(v);
+
+    for(auto i:adj)
+    {
+        //cout<<i.first<<" ";
+        for(auto j:i.second)
+        {
+            indegree[j]++;
+        }
+    }
+    //push the nodes with 0 indegree
+    queue<int> q;
+    for(int i=0;i<v;i++)
+    {
+        if(indegree[i]==0)
+        {
+            q.push(i);
+        }
+    }
+    vector<int> ans;
+    
+    while(q.size()>0)
+    {
+        int front = q.front();
+        q.pop();
+        
+        ans.push_back(front);
+        
+        for(auto i:adj[front])
+        {
+            indegree[i]--;
+            if(indegree[i]==0)
+            {
+                q.push(i);
+            }
+        }
+    }
+    return ans;
+}
