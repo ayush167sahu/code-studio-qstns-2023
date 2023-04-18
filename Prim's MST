@@ -1,0 +1,59 @@
+#include <bits/stdc++.h> 
+#include<limits.h>//for INT_MAIN;
+
+vector<pair<pair<int, int>, int>> calculatePrimsMST(int n, int m, vector<pair<pair<int, int>, int>> &g)
+{
+    // Write your code here.
+    //first step is to create the adjacent list
+    unordered_map<int,list<pair<int,int>>> adj;
+    for(int i=0;i<g.size();i++)
+    {
+        int u = g[i].first.first;
+        int v = g[i].first.second;
+        int w = g[i].second;
+
+        adj[u].push_back(make_pair(v,w));
+        adj[v].push_back(make_pair(u,w));
+    }
+    //thn we will create 3 data structure with their respective size and values;
+    vector<int> key(n+1,INT_MAX);
+    vector<bool> mst(n+1,false);
+    vector<int> parent(n+1,-1);
+
+    key[1]=0;
+    parent[1]=-1;
+    for(int i=0;i<n;i++)
+    {
+        //we have to find the minimum element and mark it true;
+        int mini = INT_MAX;
+        int u;
+        for(int v=1;v<=n;v++)
+        {
+          if(mst[v]==false && key[v]<mini)
+          {
+             u=v;
+             mini = key[v];
+          }
+        }
+        //we have to mark it true after extracting the minimum element
+        mst[u]=true;
+
+        //thn we have to traverse on the neighbouring nodes if they are not visited
+        for(auto i:adj[u])
+        {
+            int v = i.first;//gives the node;
+            int w = i.second;//gives the weight
+            if(mst[v]==false && w<key[v])
+            {
+                parent[v] = u;
+                key[v]=w;
+            }
+        }
+    }
+    vector<pair<pair<int, int>, int>> ans;
+    for(int i = 2;i<=n;i++)
+    {
+        ans.push_back(     make_pair(make_pair(parent[i],i),key[i])   );
+    }
+    return ans;
+}
