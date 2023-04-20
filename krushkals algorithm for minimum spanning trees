@@ -1,0 +1,74 @@
+#include<bits/stdc++.h>
+bool cmp(vector<int> &a,vector<int> &b)
+{
+   return a[2]<b[2];
+} 
+int findParent(vector<int> &parent,int &node)
+{  //base case if the parent of the node is itself
+   if(parent[node]==node)
+   {
+     return node;
+   }
+  //path comression logic we have to link the node to the parent for the reduction in TC
+  return //parent[node]=
+  findParent(parent,parent[node]);
+}
+void unionNodes(int u,int v,vector<int> &parent,vector<int> &rank)
+{
+  u = findParent(parent,u);
+  v = findParent(parent,v);
+
+  if(rank[v]<rank[u])
+  {
+    parent[v] = u;
+  }
+  else if(rank[u]<rank[v])
+  {
+    parent[u] = v;
+  }
+  else
+  {
+    parent[v] = u;
+    rank[u]++;
+  }
+}
+int minimumSpanningTree(vector<vector<int>>& edges, int n)
+{
+  /*
+    Don't write main().
+    Don't read input, it is passed as function argument.    
+    No need to print anything.
+    Taking input and printing output is handled automatically.
+  */
+  
+  //first we have to create two data structures named parent and rank;
+  //then we have to initialize the 2 data structures 
+  //lastly we have to get 2 functns og get parent and union
+
+  //step1:sort(acsending order) the given edges vector acording to the weight
+
+  sort(edges.begin(),edges.end(),cmp);
+  vector<int> parent(n);
+  vector<int> rank(n);
+  for(int i=0;i<n;i++)
+  {
+    parent[i] = i; //making the node the parent of itself 
+    rank[i]=0;
+  }
+  int minWT = 0;
+  for(int i=0;i<edges.size();i++)
+  {
+    int u = findParent(parent,edges[i][0]);
+    int v = findParent(parent,edges[i][1]);
+    
+    int wt =edges[i][2];
+    
+    if(u!=v)
+    {
+      minWT+=wt;
+      unionNodes(u,v,parent,rank);
+    }
+  }
+return minWT;
+
+}
